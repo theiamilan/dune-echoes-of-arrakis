@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#181711" />
+    <meta name="description" content="Echoes of Arrakis — eine atmosphärische, inoffizielle Dune-Fandemo in Three.js." />
+    <title>DUNE — Echoes of Arrakis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <main id="game" aria-label="Dune — Echoes of Arrakis">
+      <canvas id="scene" tabindex="0" aria-label="Interaktive isometrische Wüstenlandschaft"></canvas>
+      <div class="screen-texture" aria-hidden="true"></div>
+      <div class="screen-vignette" aria-hidden="true"></div>
+
+      <section id="start-screen" class="start-screen" aria-labelledby="game-title">
+        <div class="start-art" aria-hidden="true"></div>
+        <div class="start-shade" aria-hidden="true"></div>
+        <div class="intro-corner intro-corner-left"><span class="tiny-mark">✦</span> A WORLD BEYOND THE KNOWN</div>
+        <div class="intro-corner intro-corner-right">ARRAKIS <span class="muted">/</span> 10191 A.G.</div>
+        <div class="start-content">
+          <p class="eyebrow intro-eyebrow"><span></span> EINE REISE INS UNBEKANNTE <span></span></p>
+          <h1 id="game-title" class="dune-wordmark">DUNE</h1>
+          <p class="game-subtitle">ECHOES OF ARRAKIS</p>
+          <div class="intro-rule"><i></i><span>◇</span><i></i></div>
+          <p class="intro-chapter">I <span>—</span> DAS FLÜSTERN IM SAND</p>
+          <p class="intro-description">Eine vergessene Station. Ein Signal unter dem Sand.<br />Und eine Wüste, die jeden deiner Schritte hört.</p>
+          <button id="start-button" class="enter-button" type="button"><span>DIE WÜSTE BETRETEN</span><span class="button-arrow" aria-hidden="true">↗</span></button>
+          <p id="load-status" class="load-status" role="status">Die Wüste erwacht …</p>
+        </div>
+        <div class="intro-footer"><span>ISOMETRISCHES ROLLENSPIEL <i>·</i> KURZE SPIELBARE DEMO</span><span>INOFFIZIELLES FANPROJEKT</span><span>TON EMPFOHLEN <span class="sound-wave" aria-hidden="true">▂▅▃▇▃</span></span></div>
+      </section>
+
+      <div id="hud" class="hud hidden">
+        <header class="top-bar">
+          <div class="world-identity">
+            <div class="world-icon" aria-hidden="true"><span></span><i></i></div>
+            <div><p class="world-eyebrow">DUNE <span>/</span> ECHOES OF ARRAKIS</p><h2>Das äußere Becken</h2><p class="coordinates">22° 14′ N <span>·</span> 06° 38′ E <span>—</span> ARRAKIS</p></div>
+          </div>
+          <nav class="system-buttons" aria-label="Einstellungen">
+            <button id="sound-toggle" class="sound-button" type="button" title="Ton umschalten" aria-label="Ton umschalten">TON · AUS</button>
+            <button id="quality-toggle" class="quality-button" type="button" title="Grafikqualität umschalten">GRAFIK · HOCH</button>
+            <button id="help-toggle" class="icon-button" type="button" title="Steuerung anzeigen" aria-label="Steuerung anzeigen">?</button>
+          </nav>
+        </header>
+
+        <section class="mission-panel" aria-labelledby="objective-text">
+          <div class="section-label"><span class="diamond">◇</span> AKTUELLES ZIEL <span class="label-line"></span></div>
+          <h3 id="objective-text">Sprich mit der Fremen-Späherin</h3>
+          <p id="objective-detail">Die Siedlung am Felsen birgt Antworten.</p>
+          <div class="mission-bottom"><span class="mission-indicator"></span><span>KAPITEL I</span><span class="mission-progress">ERKUNDUNG</span></div>
+        </section>
+
+        <aside class="minimap-panel" aria-label="Umgebungskarte">
+          <div class="map-heading"><span>UMGEBUNG</span><span class="map-coordinate">GRID 07</span></div>
+          <div class="minimap-frame"><canvas id="minimap" width="180" height="180" aria-label="Karte der Umgebung"></canvas><span class="map-north">N</span><span class="map-cross map-cross-tl"></span><span class="map-cross map-cross-tr"></span><span class="map-cross map-cross-bl"></span><span class="map-cross map-cross-br"></span></div>
+          <div class="map-footer"><span class="map-scale"></span><span>100 m</span><span class="map-status">● LIVE</span></div>
+        </aside>
+
+        <div id="world-label" class="world-label hidden"><span class="target-dot"></span><span class="target-name">Untersuchen</span><kbd>E</kbd></div>
+
+        <footer class="bottom-bar">
+          <section class="character-panel" aria-label="Charakterstatus">
+            <div class="character-portrait" aria-hidden="true"><div class="portrait-halo"></div><div class="portrait-hood"></div><div class="portrait-face"></div><div class="portrait-eyes"></div><span class="portrait-level">01</span></div>
+            <div class="character-stats"><div class="character-name">DER WANDERER <span>FREMEN</span></div><div class="water-label"><span><svg viewBox="0 0 14 18" aria-hidden="true"><path d="M7 1C5 5 1 8 1 12a6 6 0 0012 0C13 8 9 5 7 1Z"/></svg> WASSER</span><span><strong id="water-value">100%</strong></span></div><div class="resource-track"><div id="water-fill" class="water-fill"></div></div><div class="spice-label"><span class="spice-symbol">✦</span><strong id="spice-value">0</strong><span>SPICE</span><span class="suit-label">DESTILLANZUG AKTIV</span></div></div>
+          </section>
+
+          <nav class="action-bar" aria-label="Aktionen">
+            <button id="interact-button" class="action-button action-primary" type="button" title="Interagieren (E)"><kbd>E</kbd><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 9-9 9-9-9Z"/><path d="M8 12h8m-4-4v8"/></svg><span>INTERAGIEREN</span></button>
+            <button id="scan-button" class="action-button" type="button" title="Umgebung scannen (Q)"><kbd>Q</kbd><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5m6 0h5v5m0 6v5h-5m-6 0H4v-5"/><circle cx="12" cy="12" r="4"/><path d="M12 6v12m-6-6h12"/></svg><span>SCANNEN</span></button>
+            <button id="journal-button" class="action-button" type="button" title="Journal öffnen (J)"><kbd>J</kbd><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h14v18H5zM8 3v18m3-13h5m-5 4h5m-5 4h3"/></svg><span>JOURNAL</span></button>
+            <button id="camera-button" class="action-button" type="button" title="Kamera wechseln (C)"><kbd>C</kbd><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h5l2-3h4l2 3h5v13H3Z"/><circle cx="12" cy="13" r="4"/></svg><span>KAMERA</span></button>
+          </nav>
+
+          <div class="environment-panel"><div class="sun-icon" aria-hidden="true">☀</div><div class="environment-time">17:42 <span>/</span> DEEP DESERT</div><div class="environment-detail">38°C <span>·</span> WIND AUS NORDOST</div><div class="environment-line"></div><div class="environment-warning"><span></span> BLEIB AUF DEM FELSEN</div></div>
+        </footer>
+        <div class="controls-hint"><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> BEWEGEN</span><span><span class="mouse-icon" aria-hidden="true"></span> KLICKEN ZUM LAUFEN</span><span><kbd>RAD</kbd> ZOOM</span></div>
+      </div>
+
+      <section id="dialogue-panel" class="dialogue-panel hidden" aria-label="Gespräch" role="dialog" aria-modal="true">
+        <div class="dialogue-accent"></div><div class="dialogue-portrait" aria-hidden="true"><div class="portrait-hood"></div><div class="portrait-face"></div><div class="portrait-eyes"></div></div>
+        <div class="dialogue-main"><div class="dialogue-header"><h2 id="dialogue-name">Chani</h2><span id="dialogue-role">FREMEN-SPÄHERIN</span><span class="dialogue-transmission">● VERBINDUNG LOKAL</span></div><p id="dialogue-text"></p><div id="dialogue-options" class="dialogue-options"></div></div>
+      </section>
+
+      <section id="journal-panel" class="journal-panel modal-panel hidden" aria-label="Journal" role="dialog" aria-modal="true"><div class="modal-heading"><div><p class="eyebrow">AUFZEICHNUNGEN DES WANDERERS</p><h2>Das Journal</h2></div><button id="journal-close" class="close-button" type="button" aria-label="Journal schließen">×</button></div><div class="modal-rule"></div><div id="journal-content"><p class="journal-chapter">KAPITEL I — DAS FLÜSTERN IM SAND</p><h3>Ein Signal aus der Tiefe</h3><p>Der Wind trägt Geschichten durch die Schluchten von Arrakis. Eine Fremen-Späherin wartet nahe der alten Station. Vielleicht weiß sie, was unter dem Sand verborgen liegt.</p></div><div class="journal-bottom">JEDER WEG BEGINNT MIT EINEM SCHRITT. <span>01</span></div></section>
+
+      <section id="help-panel" class="help-panel modal-panel hidden" aria-label="Steuerung" role="dialog" aria-modal="true"><div class="modal-heading"><div><p class="eyebrow">FELDHANDBUCH</p><h2>In der Wüste</h2></div><button id="help-close" class="close-button" type="button" aria-label="Steuerung schließen">×</button></div><div class="modal-rule"></div><p class="help-intro">Erkunde die Station und folge dem Signal. Nähere dich markierten Personen und Gegenständen, um mit ihnen zu interagieren.</p><dl class="help-controls"><div><dt><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> <span>oder</span> KLICK</dt><dd>Bewegen</dd></div><div><dt><kbd>E</kbd></dt><dd>Interagieren</dd></div><div><dt><kbd>Q</kbd></dt><dd>Umgebung scannen</dd></div><div><dt><kbd>J</kbd></dt><dd>Journal</dd></div><div><dt><kbd>C</kbd></dt><dd>Kameraperspektive</dd></div><div><dt>MAUSRAD</dt><dd>Zoom</dd></div><div><dt>RECHTS ZIEHEN</dt><dd>Kamera drehen</dd></div><div><dt><kbd>LEERTASTE</kbd></dt><dd>Taktische Pause</dd></div><div><dt><kbd>H</kbd></dt><dd>HUD ein-/ausblenden</dd></div><div><dt><kbd>ESC</kbd></dt><dd>Fenster schließen</dd></div></dl><p class="help-tip"><span>◇</span> Die Wüste vergisst nichts. Achte auf dein Wasser.</p></section>
+
+      <section id="end-screen" class="end-screen hidden" aria-label="Kapitel abgeschlossen"><div class="end-content"><p class="eyebrow">KAPITEL I ABGESCHLOSSEN</p><div class="end-emblem" aria-hidden="true">◇</div><h2>Die Wüste erinnert sich.</h2><p>Du hast das Signal gefunden.<br />Doch unter Arrakis schläft noch viel mehr.</p><div class="intro-rule"><i></i><span>✦</span><i></i></div><p class="end-caption">ENDE DER DEMO</p><button id="restart-button" class="enter-button" type="button"><span>ERNEUT ERKUNDEN</span><span class="button-arrow" aria-hidden="true">↗</span></button><p class="fan-credit">Eine inoffizielle Hommage an die Welt von Dune.</p></div></section>
+      <div id="toast" class="toast" role="status"></div>
+      <div id="cinematic-bars" class="cinematic-bars hidden" aria-hidden="true"></div>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
